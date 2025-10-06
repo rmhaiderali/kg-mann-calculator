@@ -71,7 +71,12 @@ function App() {
             }}
             wrap="off"
             rows={lines.length}
-            inputMode="numeric"
+            inputMode={
+              navigator.userAgent.includes("AppleWebKit/") &&
+              !navigator.userAgent.includes("Chrome/")
+                ? "text"
+                : "decimal"
+            }
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
