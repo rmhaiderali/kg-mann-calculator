@@ -1,17 +1,44 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
+import { UAParser } from "ua-parser-js"
+import debounce from "debounce"
+
+const userAgent = new UAParser().getResult()
+
+const pushState = debounce((newParams) => {
+  history.pushState(newParams, "", "?" + new URLSearchParams(newParams))
+}, 500)
+
+const isFieldSizingSupported = CSS.supports("field-sizing", "content")
 
 function App() {
-  const fontSize = "14px"
+  const textRef = useRef(null)
+  const lineNoRef = useRef(null)
 
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(location.search).entries())
   )
 
+  function updateTextRefWidth() {
+    textRef.current.style.width = "0px"
+    textRef.current.style.width = textRef.current.scrollWidth + 1 + "px"
+  }
+
+  function updateLineNoRefWidth() {
+    lineNoRef.current.style.width = "0px"
+    lineNoRef.current.style.width = lineNoRef.current.scrollWidth + 1 + "px"
+  }
+
+  function updateBothRefWidth() {
+    if (isFieldSizingSupported) return
+    updateTextRefWidth()
+    updateLineNoRefWidth()
+  }
+
   const text = searchParams?.text || ""
   const setText = (newText) => {
     setSearchParams((prev) => {
       const newParams = { ...prev, text: newText }
-      history.pushState(newParams, "", "?" + new URLSearchParams(newParams))
+      pushState(newParams)
       return newParams
     })
   }
@@ -19,6 +46,11 @@ function App() {
   const lines = text.split("\n")
   const numbers = lines.map((line) => parseFloat(line))
   const sum = numbers.reduce((a, b) => a + (isNaN(b) ? 0 : b), 0)
+
+  const sign = sum < 0 ? "−" : ""
+  const absTotalKg = Math.abs(sum.toFixed(2))
+  const absMann = Math.abs(Math[sum / 40 < 0 ? "ceil" : "floor"](sum / 40))
+  const absRemainingKg = Math.abs((sum % 40).toFixed(2))
 
   function arrayRange(start, stop, step = 1) {
     return Array.from(
@@ -28,63 +60,57 @@ function App() {
   }
 
   useEffect(() => {
+    updateBothRefWidth()
+    window.addEventListener("resize", updateBothRefWidth)
     window.addEventListener("popstate", ({ state }) => setSearchParams(state))
   }, [])
 
+  useEffect(() => {
+    updateBothRefWidth()
+  }, [text])
+
   return (
-    <div style={{ fontSize, zoom: "1.5" }}>
-      <div style={{ display: "flex" }}>
-        <div style={{ display: "flex" }}>
-          <textarea
-            style={{
-              fontSize,
-              margin: "0px",
-              resize: "none",
-              outline: "none",
-              userSelect: "none",
-              fieldSizing: "content",
-              border: "1px solid gray",
-              borderRight: "none",
-              borderRadius: "3px 0px 0px 3px",
-            }}
-            disabled={true}
-            readOnly={true}
-            rows={lines.length}
-            value={arrayRange(1, lines.length).join("\n")}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            overflow: "hidden",
-            border: "1px solid gray",
-            borderRadius: "0px 3px 3px 0px",
-          }}
-        >
-          <textarea
-            style={{
-              fontSize,
-              margin: "0px",
-              border: "none",
-              resize: "none",
-              outline: "none",
-            }}
-            wrap="off"
-            rows={lines.length}
-            inputMode={
-              navigator.userAgent.includes("AppleWebKit/") &&
-              !navigator.userAgent.includes("Chrome/")
-                ? "text"
-                : "decimal"
-            }
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-        </div>
+    <div style={{ zoom: "1.5" }}>
+      <table>
+        <colgroup>
+          <col style={{ width: "1px" }} />
+          <col style={{ width: "auto" }} />
+        </colgroup>
+        <tbody>
+          <tr>
+            <td style={{ borderRight: "1px solid gray" }}>
+              <textarea
+                style={{ userSelect: "none" }}
+                wrap="off"
+                ref={lineNoRef}
+                disabled={true}
+                readOnly={true}
+                rows={lines.length}
+                value={arrayRange(1, lines.length).join("\n")}
+              />
+            </td>
+            <td>
+              <textarea
+                style={{
+                  minWidth: "100%",
+                  boxSizing: "border-box",
+                }}
+                wrap="off"
+                value={text}
+                ref={textRef}
+                rows={lines.length}
+                onChange={(e) => setText(e.target.value)}
+                inputMode={userAgent.os.name === "Android" ? "numeric" : "text"}
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div style={{ marginTop: "8px" }}>
+        {sign} {absTotalKg} kg
       </div>
-      <div style={{ marginTop: "8px" }}>{Number(sum.toFixed(2))} kg</div>
       <div style={{ marginTop: "4px" }}>
-        {Math.floor(sum / 40)} mann {Number((sum % 40).toFixed(2))} kg
+        {sign} {absMann} mann {absRemainingKg} kg
       </div>
     </div>
   )

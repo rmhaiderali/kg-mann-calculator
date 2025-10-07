@@ -11,9 +11,11 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "debounce": "^2.2.0",
     "gh-pages": "^6.3.0",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "ua-parser-js": "^2.0.5"
   },
   "devDependencies": {
     "@types/react": "^19.1.16",

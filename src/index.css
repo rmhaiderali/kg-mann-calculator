@@ -1,3 +1,32 @@
 :root {
-  color-scheme: light dark
+  color-scheme: light dark;
+}
+
+html,
+body {
+  font-size: 14px;
+  width: fit-content;
+}
+
+table {
+  min-width: 100%;
+  overflow: hidden;
+  border-radius: 3px;
+  border-spacing: 0px;
+  box-sizing: border-box;
+  border: 1px solid gray;
+}
+
+td {
+  padding: 0px;
+}
+
+textarea {
+  margin: 0px;
+  border: none;
+  resize: none;
+  outline: none;
+  display: block;
+  font-size: 14px;
+  field-sizing: content;
 }
