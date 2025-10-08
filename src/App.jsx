@@ -4,8 +4,17 @@ import debounce from "debounce"
 
 const userAgent = new UAParser().getResult()
 
+const newLine = "\n"
+const newLineReplace = ":"
+
+function toSearchParams(params) {
+  return new URLSearchParams(params)
+    .toString()
+    .replaceAll(encodeURIComponent(newLineReplace), newLineReplace)
+}
+
 const pushState = debounce((newParams) => {
-  history.pushState(newParams, "", "?" + new URLSearchParams(newParams))
+  history.pushState(newParams, "", "?" + toSearchParams(newParams))
 }, 500)
 
 const isFieldSizingSupported = CSS.supports("field-sizing", "content")
@@ -14,9 +23,12 @@ function App() {
   const textRef = useRef(null)
   const lineNoRef = useRef(null)
 
-  const [searchParams, setSearchParams] = useState(
-    Object.fromEntries(new URLSearchParams(location.search).entries())
-  )
+  const [searchParams, setSearchParams] = useState(() => {
+    const params = Object.fromEntries(new URLSearchParams(location.search))
+    params.text = params.text?.replaceAll(newLine, newLineReplace) || ""
+    history.replaceState(params, "", "?" + toSearchParams(params))
+    return params
+  })
 
   function updateTextRefWidth() {
     textRef.current.style.width = "0px"
@@ -43,7 +55,7 @@ function App() {
     })
   }
 
-  const lines = text.split("\n")
+  const lines = text.split(newLineReplace)
   const numbers = lines.map((line) => parseFloat(line))
   const sum = numbers.reduce((a, b) => a + (isNaN(b) ? 0 : b), 0)
 
@@ -86,7 +98,7 @@ function App() {
                 disabled={true}
                 readOnly={true}
                 rows={lines.length}
-                value={arrayRange(1, lines.length).join("\n")}
+                value={arrayRange(1, lines.length).join(newLine)}
               />
             </td>
             <td>
@@ -96,10 +108,12 @@ function App() {
                   boxSizing: "border-box",
                 }}
                 wrap="off"
-                value={text}
                 ref={textRef}
                 rows={lines.length}
-                onChange={(e) => setText(e.target.value)}
+                value={text.replaceAll(newLineReplace, newLine)}
+                onChange={(e) =>
+                  setText(e.target.value.replaceAll(newLine, newLineReplace))
+                }
                 inputMode={userAgent.os.name === "Android" ? "numeric" : "text"}
               />
             </td>
