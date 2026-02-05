@@ -1,32 +1,61 @@
 :root {
+  --border: gray;
+  --background: field;
   color-scheme: light dark;
+}
+
+@supports (color: light-dark(#000, #fff)) {
+  :root {
+    --border: light-dark(#767676, #858585);
+  }
+}
+
+@-moz-document url-prefix() {
+  :root {
+    --border: buttonborder;
+  }
 }
 
 html,
 body {
-  font-size: 14px;
+  font-size: 21px;
   width: fit-content;
 }
 
-table {
-  min-width: 100%;
-  overflow: hidden;
-  border-radius: 3px;
-  border-spacing: 0px;
-  box-sizing: border-box;
-  border: 1px solid gray;
-}
-
-td {
-  padding: 0px;
+button {
+  line-height: 1;
+  font-size: 16px;
+  padding: 2px 5px;
+  border-radius: 4.5px;
+  background: var(--background);
+  border: 1.5px solid var(--border);
 }
 
 textarea {
   margin: 0px;
   border: none;
   resize: none;
+  padding: 2px;
   outline: none;
   display: block;
-  font-size: 14px;
+  font-size: 21px;
   field-sizing: content;
+}
+
+.container {
+  display: flex;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 4.5px;
+  border: 1.5px solid var(--border);
+}
+
+.container > :first-child {
+  border-right: 1.5px solid var(--border);
+}
+
+select {
+  border-radius: 2.5px;
+  background: var(--background);
+  border: 1px solid var(--border);
 }

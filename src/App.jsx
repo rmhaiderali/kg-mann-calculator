@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from "react"
-import { UAParser } from "ua-parser-js"
+import { useSelect } from "downshift"
 import debounce from "debounce"
 
-const userAgent = new UAParser().getResult()
+function uppercaseFirstChar(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
 
 const newLine = "\n"
 const newLineReplace = ":"
@@ -13,9 +15,8 @@ function toSearchParams(params) {
     .replaceAll(encodeURIComponent(newLineReplace), newLineReplace)
 }
 
-const pushState = debounce((newParams) => {
-  history.pushState(newParams, "", "?" + toSearchParams(newParams))
-}, 500)
+const debounce_1_50ms = debounce((fn) => fn(), 50)
+const debounce_1_500ms = debounce((fn) => fn(), 500)
 
 const isFieldSizingSupported = CSS.supports("field-sizing", "content")
 
@@ -31,30 +32,44 @@ function App() {
   })
 
   function updateTextRefWidth() {
+    if (isFieldSizingSupported) return
     textRef.current.style.width = "0px"
     textRef.current.style.width = textRef.current.scrollWidth + 1 + "px"
   }
 
   function updateLineNoRefWidth() {
+    if (isFieldSizingSupported) return
     lineNoRef.current.style.width = "0px"
-    lineNoRef.current.style.width = lineNoRef.current.scrollWidth + 1 + "px"
+    lineNoRef.current.style.width = lineNoRef.current.scrollWidth - 2 + "px"
+  }
+
+  function updateLineNoRefContent(text) {
+    const linesCount = text.split(newLineReplace).length
+    lineNoRef.current.value = arrayRange(1, linesCount).join(newLine)
+    updateLineNoRefWidth()
   }
 
   function updateBothRefWidth() {
-    if (isFieldSizingSupported) return
     updateTextRefWidth()
     updateLineNoRefWidth()
   }
 
-  const text = searchParams?.text || ""
   const setText = (newText) => {
+    debounce_1_50ms(() => {
+      updateLineNoRefContent(newText)
+      updateLineNoRefWidth()
+    })
+    updateTextRefWidth()
     setSearchParams((prev) => {
-      const newParams = { ...prev, text: newText }
-      pushState(newParams)
-      return newParams
+      const params = { ...prev, text: newText }
+      debounce_1_500ms(() =>
+        history.pushState(params, "", "?" + toSearchParams(params)),
+      )
+      return params
     })
   }
 
+  const text = searchParams?.text || ""
   const lines = text.split(newLineReplace)
   const numbers = lines.map((line) => parseFloat(line))
   const sum = numbers.reduce((a, b) => a + (isNaN(b) ? 0 : b), 0)
@@ -67,59 +82,92 @@ function App() {
   function arrayRange(start, stop, step = 1) {
     return Array.from(
       { length: (stop - start) / step + 1 },
-      (value, index) => start + index * step
+      (value, index) => start + index * step,
     )
   }
 
   useEffect(() => {
+    updateLineNoRefContent(text)
     updateBothRefWidth()
     window.addEventListener("resize", updateBothRefWidth)
     window.addEventListener("popstate", ({ state }) => setSearchParams(state))
   }, [])
 
-  useEffect(() => {
-    updateBothRefWidth()
-  }, [text])
+  const [lineHeight] = useState(() => {
+    const textarea = document.createElement("textarea")
+    textarea.rows = 1
+    textarea.value = "1"
+    document.body.appendChild(textarea)
+    const style = getComputedStyle(textarea)
+    const height = parseFloat(style.height)
+    document.body.removeChild(textarea)
+    return height
+  })
+
+  const items = ["text", "decimal", "numeric"]
+
+  const {
+    isOpen,
+    selectedItem,
+    getItemProps,
+    getMenuProps,
+    getToggleButtonProps,
+  } = useSelect({
+    items,
+    initialSelectedItem: localStorage.getItem("inputMode") ?? items[0],
+    onSelectedItemChange: ({ selectedItem }) =>
+      selectedItem && localStorage.setItem("inputMode", selectedItem),
+  })
 
   return (
-    <div style={{ zoom: "1.5" }}>
-      <table>
-        <colgroup>
-          <col style={{ width: "1px" }} />
-          <col style={{ width: "auto" }} />
-        </colgroup>
-        <tbody>
-          <tr>
-            <td style={{ borderRight: "1px solid gray" }}>
-              <textarea
-                style={{ userSelect: "none" }}
-                wrap="off"
-                ref={lineNoRef}
-                disabled={true}
-                readOnly={true}
-                rows={lines.length}
-                value={arrayRange(1, lines.length).join(newLine)}
-              />
-            </td>
-            <td>
-              <textarea
-                style={{
-                  minWidth: "100%",
-                  boxSizing: "border-box",
-                }}
-                wrap="off"
-                ref={textRef}
-                rows={lines.length}
-                value={text.replaceAll(newLineReplace, newLine)}
-                onChange={(e) =>
-                  setText(e.target.value.replaceAll(newLine, newLineReplace))
-                }
-                inputMode={userAgent.os.name === "Android" ? "numeric" : "text"}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div style={{ padding: "2px" }}>
+      <div style={{ textWrap: "nowrap", display: "inline-flex" }}>
+        <div style={{ marginRight: "6px" }}>Input mode</div>
+        <button
+          {...getToggleButtonProps()}
+          style={{ display: isOpen ? "none" : "block" }}
+        >
+          {uppercaseFirstChar(selectedItem)}
+        </button>
+        <div
+          {...getMenuProps()}
+          style={{ gap: "6px", display: isOpen ? "flex" : "none" }}
+        >
+          {items.map((item, index) => (
+            <button key={item} {...getItemProps({ item, index })}>
+              {uppercaseFirstChar(item)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="container">
+        <div>
+          <textarea
+            wrap="off"
+            ref={lineNoRef}
+            disabled={true}
+            readOnly={true}
+            style={{
+              direction: "rtl",
+              overflow: "hidden",
+              height: lines.length * lineHeight + "px",
+            }}
+          />
+        </div>
+        <textarea
+          wrap="off"
+          ref={textRef}
+          rows={lines.length}
+          style={{ flex: "1 1 auto" }}
+          value={text.replaceAll(newLineReplace, newLine)}
+          onChange={(e) =>
+            setText(e.target.value.replaceAll(newLine, newLineReplace))
+          }
+          inputMode={selectedItem}
+        />
+      </div>
+
       <div style={{ marginTop: "8px" }}>
         {sign} {absTotalKg} kg
       </div>
