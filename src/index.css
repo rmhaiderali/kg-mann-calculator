@@ -1,18 +1,28 @@
 :root {
-  --border: gray;
+  --text: #000;
+  --border: #767676;
   --background: field;
   color-scheme: light dark;
 }
 
-@supports (color: light-dark(#000, #fff)) {
+@media (prefers-color-scheme: dark) {
   :root {
-    --border: light-dark(#767676, #858585);
+    --text: #fff;
+    --border: #858585;
   }
 }
 
 @-moz-document url-prefix() {
   :root {
     --border: buttonborder;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  @media (hover: none) and (pointer: coarse) {
+    button {
+      --background: #0000;
+    }
   }
 }
 
@@ -26,6 +36,7 @@ button {
   line-height: 1;
   font-size: 16px;
   padding: 2px 5px;
+  color: var(--text);
   border-radius: 4.5px;
   background: var(--background);
   border: 1.5px solid var(--border);
@@ -40,6 +51,7 @@ textarea {
   display: block;
   font-size: 21px;
   field-sizing: content;
+  caret-color: var(--text);
 }
 
 .container {
@@ -52,10 +64,4 @@ textarea {
 
 .container > :first-child {
   border-right: 1.5px solid var(--border);
-}
-
-select {
-  border-radius: 2.5px;
-  background: var(--background);
-  border: 1px solid var(--border);
 }

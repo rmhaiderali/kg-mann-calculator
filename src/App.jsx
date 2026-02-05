@@ -133,11 +133,13 @@ function App() {
           {...getMenuProps()}
           style={{ gap: "6px", display: isOpen ? "flex" : "none" }}
         >
-          {items.map((item, index) => (
-            <button key={item} {...getItemProps({ item, index })}>
-              {uppercaseFirstChar(item)}
-            </button>
-          ))}
+          {[selectedItem]
+            .concat(items.filter((item) => item !== selectedItem))
+            .map((item) => (
+              <button key={item} {...getItemProps({ item })}>
+                {uppercaseFirstChar(item)}
+              </button>
+            ))}
         </div>
       </div>
 
