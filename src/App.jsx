@@ -24,6 +24,19 @@ function App() {
   const textRef = useRef(null)
   const lineNoRef = useRef(null)
 
+  function calculateLineHeight() {
+    const textarea = document.createElement("textarea")
+    textarea.rows = 1
+    textarea.value = "1"
+    document.body.appendChild(textarea)
+    const style = getComputedStyle(textarea)
+    const height = parseFloat(style.height)
+    document.body.removeChild(textarea)
+    return height
+  }
+
+  const [lineHeight, setLineHeight] = useState(calculateLineHeight)
+
   const [searchParams, setSearchParams] = useState(() => {
     const params = Object.fromEntries(new URLSearchParams(location.search))
     params.text = params.text?.replaceAll(newLine, newLineReplace) || ""
@@ -50,6 +63,7 @@ function App() {
   }
 
   function updateBothRefWidth() {
+    setLineHeight(calculateLineHeight())
     updateTextRefWidth()
     updateLineNoRefWidth()
   }
@@ -92,17 +106,6 @@ function App() {
     window.addEventListener("resize", updateBothRefWidth)
     window.addEventListener("popstate", ({ state }) => setSearchParams(state))
   }, [])
-
-  const [lineHeight] = useState(() => {
-    const textarea = document.createElement("textarea")
-    textarea.rows = 1
-    textarea.value = "1"
-    document.body.appendChild(textarea)
-    const style = getComputedStyle(textarea)
-    const height = parseFloat(style.height)
-    document.body.removeChild(textarea)
-    return height
-  })
 
   const items = ["text", "decimal", "numeric"]
 
