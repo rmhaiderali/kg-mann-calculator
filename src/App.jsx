@@ -104,7 +104,10 @@ function App() {
     updateLineNoRefContent(text)
     updateBothRefWidth()
     window.addEventListener("resize", updateBothRefWidth)
-    window.addEventListener("popstate", ({ state }) => setSearchParams(state))
+    window.addEventListener("popstate", ({ state }) => {
+      setSearchParams(state)
+      updateLineNoRefContent(state.text)
+    })
   }, [])
 
   const items = ["text", "decimal", "numeric"]
