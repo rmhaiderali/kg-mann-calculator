@@ -102,6 +102,9 @@ function App() {
       const text = normalizeToString(state.text)
       setText(text)
 
+      updateTextRefContent(text)
+      updateLineNoRefContent(text)
+
       updateTextRefWidth()
       updateLineNoRefWidth()
     })
