@@ -49,6 +49,10 @@ function App() {
     lineNoRef.current.style.width = lineNoRef.current.scrollWidth - 2 + "px"
   }
 
+  function updateTextRefContent(text) {
+    textRef.current.value = text.replaceAll(newLine, originalNewLine)
+  }
+
   function updateLineNoRefContent(text) {
     const linesCount = text.split(newLine).length
     lineNoRef.current.value = arrayRange(1, linesCount).join(originalNewLine)
@@ -81,6 +85,8 @@ function App() {
     const text = currentParamsObject.text || ""
     setText(text)
     replaceState({ text }, currentParamsObject)
+
+    updateTextRefContent(text)
     updateLineNoRefContent(text)
 
     updateTextRefWidth()
