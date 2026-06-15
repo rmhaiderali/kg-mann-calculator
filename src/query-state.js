@@ -21,6 +21,7 @@ export function pushState(
 
   const nextParamsStr = nextParams
     .toString()
+    .replaceAll("+", "%20")
     .replaceAll(newLineEncoded, newLine)
 
   const url = location.pathname + (nextParamsStr ? "?" + nextParamsStr : "")
@@ -41,6 +42,7 @@ export function replaceState(
 
   const nextParamsStr = nextParams
     .toString()
+    .replaceAll("+", "%20")
     .replaceAll(newLineEncoded, newLine)
 
   const url = location.pathname + (nextParamsStr ? "?" + nextParamsStr : "")
