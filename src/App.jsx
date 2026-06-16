@@ -82,7 +82,10 @@ function App() {
 
   useEffect(() => {
     const currentParamsObject = getCurrentParamsObject()
-    const text = currentParamsObject.text || ""
+    const text = (currentParamsObject.text || "").replaceAll(
+      originalNewLine,
+      newLine,
+    )
     setText(text)
     replaceState({ text }, currentParamsObject)
 
