@@ -118,6 +118,7 @@ function App() {
         <div style={{ marginRight: "6px" }}>Input mode</div>
         <button
           {...getToggleButtonProps()}
+          onBlur={() => {}}
           style={{ display: isOpen ? "none" : "block" }}
         >
           {uppercaseFirstChar(selectedItem)}
