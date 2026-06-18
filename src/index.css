@@ -6,7 +6,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root.dark-supported {
     --text: #fff;
     --border: #858585;
   }
@@ -50,6 +50,7 @@ textarea {
   outline: none;
   display: block;
   font-size: 21px;
+  line-height: 24px;
   field-sizing: content;
   caret-color: var(--text);
 }

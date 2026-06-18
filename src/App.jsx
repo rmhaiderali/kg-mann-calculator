@@ -20,22 +20,11 @@ const debounce_1_500ms = debounce((fn) => fn(), 500)
 
 const isFieldSizingSupported = CSS.supports("field-sizing", "content")
 
+const lineHeight = 24
+
 function App() {
   const textRef = useRef(null)
   const lineNoRef = useRef(null)
-
-  function calculateLineHeight() {
-    const textarea = document.createElement("textarea")
-    textarea.rows = 1
-    textarea.value = "1"
-    document.body.appendChild(textarea)
-    const style = getComputedStyle(textarea)
-    const height = parseFloat(style.height)
-    document.body.removeChild(textarea)
-    return height
-  }
-
-  const [lineHeight, setLineHeight] = useState(calculateLineHeight)
 
   function updateTextRefWidth() {
     if (isFieldSizingSupported) return
@@ -58,10 +47,6 @@ function App() {
     lineNoRef.current.value = arrayRange(1, linesCount).join(originalNewLine)
   }
 
-  function updateLineHeight() {
-    setLineHeight(calculateLineHeight())
-  }
-
   const [text, setText] = useState("")
 
   const lines = text.split(newLine)
@@ -81,6 +66,9 @@ function App() {
   }
 
   useEffect(() => {
+    if (!navigator.userAgent.match(/servo/i))
+      document.documentElement.classList.add("dark-supported")
+
     const currentParamsObject = getCurrentParamsObject()
     const text = (currentParamsObject.text || "").replaceAll(
       originalNewLine,
@@ -94,12 +82,6 @@ function App() {
 
     updateTextRefWidth()
     updateLineNoRefWidth()
-
-    window.addEventListener("resize", () => {
-      updateLineHeight()
-      updateTextRefWidth()
-      updateLineNoRefWidth()
-    })
 
     window.addEventListener("popstate", ({ state }) => {
       const text = normalizeToString(state.text)
@@ -127,6 +109,8 @@ function App() {
     onSelectedItemChange: ({ selectedItem }) =>
       selectedItem && localStorage.setItem("inputMode", selectedItem),
   })
+
+  const textAreaHeight = lines.length * lineHeight + "px"
 
   return (
     <div style={{ padding: "2px" }}>
@@ -162,7 +146,7 @@ function App() {
             style={{
               direction: "rtl",
               overflow: "hidden",
-              height: lines.length * lineHeight + "px",
+              height: textAreaHeight,
             }}
           />
         </div>
@@ -170,7 +154,7 @@ function App() {
           wrap="off"
           ref={textRef}
           rows={lines.length}
-          style={{ flex: "1 1 auto" }}
+          style={{ flex: "1 1 auto", height: textAreaHeight }}
           value={text.replaceAll(newLine, originalNewLine)}
           onChange={(e) => {
             const text = e.target.value.replaceAll(originalNewLine, newLine)
