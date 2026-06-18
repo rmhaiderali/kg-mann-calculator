@@ -6,9 +6,7 @@ import { VitePWA } from "vite-plugin-pwa"
 export default defineConfig({
   base: "/kg-mann-calculator",
   plugins: [
-    react({
-      babel: { plugins: [["babel-plugin-react-compiler"]] },
-    }),
+    react(),
     VitePWA({
       registerType: "autoUpdate",
       devOptions: { enabled: false },
