@@ -2,13 +2,13 @@
   --text: #000;
   --border: #767676;
   --background: field;
-  color-scheme: light dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root.dark-supported {
     --text: #fff;
     --border: #858585;
+    color-scheme: dark;
   }
 }
 
