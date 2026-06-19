@@ -13,8 +13,10 @@
 }
 
 @-moz-document url-prefix() {
-  :root {
-    --border: buttonborder;
+  @supports (color: buttonborder) {
+    :root {
+      --border: buttonborder;
+    }
   }
 }
 
