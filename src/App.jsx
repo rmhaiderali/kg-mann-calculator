@@ -123,14 +123,15 @@ function App() {
         >
           {uppercaseFirstChar(selectedItem)}
         </button>
-        <div
-          {...getMenuProps()}
-          style={{ gap: "6px", display: isOpen ? "flex" : "none" }}
-        >
+        <div {...getMenuProps()} style={{ display: isOpen ? "flex" : "none" }}>
           {[selectedItem]
             .concat(items.filter((item) => item !== selectedItem))
-            .map((item) => (
-              <button key={item} {...getItemProps({ item })}>
+            .map((item, index) => (
+              <button
+                key={item}
+                {...getItemProps({ item })}
+                style={{ marginLeft: index ? "6px" : "0" }}
+              >
                 {uppercaseFirstChar(item)}
               </button>
             ))}

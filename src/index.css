@@ -2,6 +2,13 @@
   --text: #000;
   --border: #767676;
   --background: field;
+  --border-size: 1.5px;
+}
+
+:-ms-lang(x),
+:-webkit-full-screen,
+:root {
+  --border-size: 1px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,7 +48,7 @@ button {
   color: var(--text);
   border-radius: 4.5px;
   background: var(--background);
-  border: 1.5px solid var(--border);
+  border: var(--border-size) solid var(--border);
 }
 
 textarea {
@@ -62,9 +69,9 @@ textarea {
   margin-top: 8px;
   overflow: hidden;
   border-radius: 4.5px;
-  border: 1.5px solid var(--border);
+  border: var(--border-size) solid var(--border);
 }
 
 .container > :first-child {
-  border-right: 1.5px solid var(--border);
+  border-right: var(--border-size) solid var(--border);
 }
