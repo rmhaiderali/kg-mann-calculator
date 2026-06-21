@@ -17,7 +17,23 @@
     <title>kg-mann-calculator</title>
   </head>
   <body>
+    <noscript>
+      <h2>Enable JavaScript</h2>
+    </noscript>
+    <div id="browser-error" style="display: none">
+      <h2>Browser Not Supported</h2>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      var root = document.getElementById("root")
+      var browserError = document.getElementById("browser-error")
+      window.addEventListener("error", function (e) {
+        if (root.children.length) return
+        if (e.message.match(/module/i)) return
+        if (!e.filename.match(/legacy.{10}js$/i)) return
+        browserError.style.display = "block"
+      })
+    </script>
   </body>
 </html>
