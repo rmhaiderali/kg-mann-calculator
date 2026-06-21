@@ -7,6 +7,7 @@ import {
   normalizeToString,
   getCurrentParamsObject,
 } from "./query-state.js"
+import rawCss from "./raw.css?raw"
 
 function uppercaseFirstChar(str) {
   return str.charAt(0).toUpperCase() + str.slice(1)
@@ -114,6 +115,7 @@ function App() {
 
   return (
     <div style={{ padding: "2px" }}>
+      <style>{rawCss}</style>
       <div style={{ textWrap: "nowrap", display: "inline-flex" }}>
         <div style={{ marginRight: "6px" }}>Input mode</div>
         <button

@@ -5,12 +5,6 @@
   --border-size: 1.5px;
 }
 
-:-ms-lang(x),
-:-webkit-full-screen,
-:root {
-  --border-size: 1px;
-}
-
 @media (prefers-color-scheme: dark) {
   :root.dark-supported {
     --text: #fff;
