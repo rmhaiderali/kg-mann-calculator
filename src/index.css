@@ -1,22 +1,22 @@
 :root {
-  --text: #000;
-  --border: #767676;
-  --background: field;
-  --border-size: 1.5px;
+  --text-color: #000;
+  --border-width: 1.5px;
+  --border-color: #767676;
+  --background-color: field;
 }
 
 @media (prefers-color-scheme: dark) {
   :root.dark-supported {
-    --text: #fff;
-    --border: #858585;
     color-scheme: dark;
+    --text-color: #fff;
+    --border-color: #858585;
   }
 }
 
 @-moz-document url-prefix() {
   @supports (color: buttonborder) {
     :root {
-      --border: buttonborder;
+      --border-color: buttonborder;
     }
   }
 }
@@ -24,7 +24,7 @@
 @supports (-webkit-touch-callout: none) {
   @media (hover: none) and (pointer: coarse) {
     button {
-      --background: #0000;
+      --background-color: #0000;
     }
   }
 }
@@ -35,15 +35,30 @@ body {
   width: fit-content;
 }
 
+/*  */
+
 button {
   line-height: 1;
   font-size: 16px;
   padding: 2px 5px;
-  color: var(--text);
+  border-style: solid;
   border-radius: 4.5px;
-  background: var(--background);
-  border: var(--border-size) solid var(--border);
+  background: var(--background-color);
 }
+
+button {
+  color: #000;
+  border-width: 1px;
+  border-color: #767676;
+}
+
+button {
+  color: var(--text-color);
+  border-width: var(--border-width);
+  border-color: var(--border-color);
+}
+
+/*  */
 
 textarea {
   margin: 0px;
@@ -55,17 +70,41 @@ textarea {
   font-size: 21px;
   line-height: 24px;
   field-sizing: content;
-  caret-color: var(--text);
+  caret-color: var(--text-color);
 }
+
+/*  */
 
 .container {
   display: flex;
   margin-top: 8px;
   overflow: hidden;
+  border-style: solid;
   border-radius: 4.5px;
-  border: var(--border-size) solid var(--border);
+}
+
+.container {
+  border-width: 1px;
+  border-color: #767676;
+}
+
+.container {
+  border-width: var(--border-width);
+  border-color: var(--border-color);
+}
+
+/*  */
+
+.container > :first-child {
+  border-right-style: solid;
 }
 
 .container > :first-child {
-  border-right: var(--border-size) solid var(--border);
+  border-right-width: 1px;
+  border-right-color: #767676;
+}
+
+.container > :first-child {
+  border-right-width: var(--border-width);
+  border-right-color: var(--border-color);
 }

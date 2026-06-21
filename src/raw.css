@@ -1,5 +1,5 @@
 :-ms-lang(x),
 :-webkit-full-screen,
 :root {
-  --border-size: 1px;
+  --border-width: 1px;
 }
