@@ -6,15 +6,12 @@ import {
   replaceState,
   normalizeToString,
   getCurrentParamsObject,
-} from "./query-state.js"
-import rawCss from "./raw.css?raw"
+} from "../common/query-state.js"
+import rawCss from "../common/raw.css?raw"
 
 function uppercaseFirstChar(str) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
-
-const originalNewLine = "\n"
-const newLine = "+"
 
 const debounce_1_50ms = debounce((fn) => fn(), 50)
 const debounce_1_500ms = debounce((fn) => fn(), 500)
@@ -40,17 +37,17 @@ function App() {
   }
 
   function updateTextRefContent(text) {
-    textRef.current.value = text.replaceAll(newLine, originalNewLine)
+    textRef.current.value = text
   }
 
   function updateLineNoRefContent(text) {
-    const linesCount = text.split(newLine).length
-    lineNoRef.current.value = arrayRange(1, linesCount).join(originalNewLine)
+    const linesCount = text.split("\n").length
+    lineNoRef.current.value = arrayRange(1, linesCount).join("\n")
   }
 
   const [text, setText] = useState("")
 
-  const lines = text.split(newLine)
+  const lines = text.split("\n")
   const numbers = lines.map((line) => parseFloat(line))
   const sum = numbers.reduce((a, b) => a + (isNaN(b) ? 0 : b), 0)
 
@@ -71,10 +68,7 @@ function App() {
       document.documentElement.classList.add("dark-supported")
 
     const currentParamsObject = getCurrentParamsObject()
-    const text = (currentParamsObject.text || "").replaceAll(
-      originalNewLine,
-      newLine,
-    )
+    const text = normalizeToString(currentParamsObject.text)
     setText(text)
     replaceState({ text }, currentParamsObject)
 
@@ -96,7 +90,10 @@ function App() {
     })
   }, [])
 
-  const items = ["text", "decimal", "numeric"]
+  const inputModes = ["text", "decimal", "numeric"]
+  const [selectedInputMode] = useState(
+    () => localStorage.getItem("inputMode") ?? inputModes[0],
+  )
 
   const {
     isOpen,
@@ -105,10 +102,12 @@ function App() {
     getMenuProps,
     getToggleButtonProps,
   } = useSelect({
-    items,
-    initialSelectedItem: localStorage.getItem("inputMode") ?? items[0],
-    onSelectedItemChange: ({ selectedItem }) =>
-      selectedItem && localStorage.setItem("inputMode", selectedItem),
+    items: inputModes,
+    initialSelectedItem: selectedInputMode,
+    onSelectedItemChange: ({ selectedItem }) => {
+      if (!selectedItem) return
+      localStorage.setItem("inputMode", selectedItem)
+    },
   })
 
   const textAreaHeight = lines.length * lineHeight + "px"
@@ -127,7 +126,7 @@ function App() {
         </button>
         <div {...getMenuProps()} style={{ display: isOpen ? "flex" : "none" }}>
           {[selectedItem]
-            .concat(items.filter((item) => item !== selectedItem))
+            .concat(inputModes.filter((item) => item !== selectedItem))
             .map((item, index) => (
               <button
                 key={item}
@@ -156,12 +155,12 @@ function App() {
         </div>
         <textarea
           wrap="off"
+          value={text}
           ref={textRef}
           rows={lines.length}
           style={{ flex: "1 1 auto", height: textAreaHeight }}
-          value={text.replaceAll(newLine, originalNewLine)}
           onChange={(e) => {
-            const text = e.target.value.replaceAll(originalNewLine, newLine)
+            const text = e.target.value
             setText(text)
             updateTextRefWidth()
             debounce_1_50ms(() => {

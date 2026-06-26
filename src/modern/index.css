@@ -1,0 +1,108 @@
+:root {
+  --text-color: #000;
+  --border-width: 1.5px;
+  --border-color: #767676;
+  --background-color: field;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root.dark-supported {
+    color-scheme: dark;
+    --text-color: #fff;
+    --border-color: #858585;
+  }
+}
+
+@-moz-document url-prefix() {
+  @supports (color: buttonborder) {
+    :root {
+      --border-color: buttonborder;
+    }
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  @media (hover: none) and (pointer: coarse) {
+    button {
+      --background-color: #0000;
+    }
+  }
+}
+
+html,
+body {
+  font-size: 21px;
+  width: fit-content;
+}
+
+/*  */
+
+button {
+  line-height: 1;
+  font-size: 16px;
+  padding: 2px 5px;
+  border-style: solid;
+  border-radius: 4.5px;
+  background: var(--background-color);
+}
+
+button {
+  color: #000;
+  border-width: 1px;
+  border-color: #767676;
+}
+
+button {
+  color: var(--text-color);
+  border-width: var(--border-width);
+  border-color: var(--border-color);
+}
+
+/*  */
+
+textarea {
+  margin: 0px;
+  border: none;
+  resize: none;
+  padding: 2px;
+  outline: none;
+  display: block;
+  font-size: 21px;
+  line-height: 24px;
+  field-sizing: content;
+}
+
+/*  */
+
+.container {
+  margin-top: 8px;
+  overflow: hidden;
+  border-style: solid;
+  border-radius: 4.5px;
+}
+
+.container {
+  border-width: 1px;
+  border-color: #767676;
+}
+
+.container {
+  border-width: var(--border-width);
+  border-color: var(--border-color);
+}
+
+/*  */
+
+.cm-gutters.cm-gutters-before {
+  border-right-style: solid !important;
+}
+
+.cm-gutters.cm-gutters-before {
+  border-right-width: 1px !important;
+  border-right-color: #767676 !important;
+}
+
+.cm-gutters.cm-gutters-before {
+  border-right-width: var(--border-width) !important;
+  border-right-color: var(--border-color) !important;
+}

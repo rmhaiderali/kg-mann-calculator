@@ -1,9 +1,6 @@
-const newLine = "+"
-const newLineEncoded = encodeURIComponent(newLine)
-
 export function getCurrentParamsObject() {
   const currentParams = new URLSearchParams(
-    location.search.replaceAll(newLine, newLineEncoded),
+    location.search.replaceAll("+", "%0A"),
   )
   return Object.fromEntries(currentParams)
 }
@@ -22,7 +19,7 @@ export function pushState(
   const nextParamsStr = nextParams
     .toString()
     .replaceAll("+", "%20")
-    .replaceAll(newLineEncoded, newLine)
+    .replaceAll("%0A", "+")
 
   const url = location.pathname + (nextParamsStr ? "?" + nextParamsStr : "")
 
@@ -43,7 +40,7 @@ export function replaceState(
   const nextParamsStr = nextParams
     .toString()
     .replaceAll("+", "%20")
-    .replaceAll(newLineEncoded, newLine)
+    .replaceAll("%0A", "+")
 
   const url = location.pathname + (nextParamsStr ? "?" + nextParamsStr : "")
 

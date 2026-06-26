@@ -24,6 +24,14 @@ export default defineConfig({
         ],
       },
     }),
-    legacy({ targets: ["edge >= 12"] }),
+    legacy({
+      targets: ["edge >= 12"],
+      additionalLegacyPolyfills: ["whatwg-fetch"],
+    }),
   ],
+  build: {
+    rolldownOptions: {
+      input: ["/index.html", "/classic/index.html"],
+    },
+  },
 })
