@@ -15,8 +15,9 @@
       media="(prefers-color-scheme: dark)"
     />
     <title>kg-mann-calculator</title>
-    <script type="module" crossorigin src="/kg-mann-calculator/assets/index-CK25pX_6.js"></script>
-    <link rel="stylesheet" crossorigin href="/kg-mann-calculator/assets/index-CjG_iTRE.css">
+    <script type="module" crossorigin src="/kg-mann-calculator/assets/index-DLGZeU_b.js"></script>
+    <link rel="modulepreload" crossorigin href="/kg-mann-calculator/assets/jsx-runtime-BrXM3QuV.js">
+    <link rel="stylesheet" crossorigin href="/kg-mann-calculator/assets/index-Ditt9EdD.css">
     <script type="module">import'data:text/javascript,if(!import.meta.resolve)throw Error("import.meta.resolve not supported")';import.meta.url;import("_").catch(()=>1);(async function*(){})().next();window.__vite_is_modern_browser=true</script>
     <script type="module">!function(){if(window.__vite_is_modern_browser)return;console.warn("vite: loading legacy chunks, syntax error above and the same error below should be ignored");var e=document.getElementById("vite-legacy-polyfill"),n=document.createElement("script");n.src=e.src,n.onload=function(){System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))},document.body.appendChild(n)}();</script>
   <link rel="manifest" href="/kg-mann-calculator/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/kg-mann-calculator/registerSW.js"></script></head>
@@ -26,6 +27,10 @@
     </noscript>
     <div id="browser-error" style="display: none">
       <h2>Browser Not Supported</h2>
+      <p>
+        Try using classic
+        <a href="/kg-mann-calculator/classic/">kg-mann-calculator</a>
+      </p>
     </div>
     <div id="root"></div>
     <script>
@@ -34,12 +39,13 @@
       window.addEventListener("error", function (e) {
         if (root.children.length) return
         if (e.message.match(/module/i)) return
-        if (!e.filename.match(/legacy.{10}js$/i)) return
+        const stack = e.error && e.error.stack
+        if (!("" + e.filename + stack).match(/legacy.{10}js/i)) return
         browserError.style.display = "block"
       })
     </script>
     <script nomodule>!function(){var e=document,t=e.createElement("script");if(!("noModule"in t)&&"onbeforeload"in t){var n=!1;e.addEventListener("beforeload",(function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute("nomodule")||!n)return;e.preventDefault()}),!0),t.type="module",t.src=".",e.head.appendChild(t),t.remove()}}();</script>
-    <script nomodule crossorigin id="vite-legacy-polyfill" src="/kg-mann-calculator/assets/polyfills-legacy-Dvgq7Qvs.js"></script>
-    <script nomodule crossorigin id="vite-legacy-entry" data-src="/kg-mann-calculator/assets/index-legacy-BXb75AhF.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>
+    <script nomodule crossorigin id="vite-legacy-polyfill" src="/kg-mann-calculator/assets/polyfills-legacy-aMdaYfEM.js"></script>
+    <script nomodule crossorigin id="vite-legacy-entry" data-src="/kg-mann-calculator/assets/index-legacy-DOrpRL2q.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>
   </body>
 </html>
