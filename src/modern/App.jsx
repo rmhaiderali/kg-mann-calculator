@@ -146,7 +146,7 @@ function App() {
       ],
     })
 
-    darkSchemeQuery.addEventListener("change", ({ matches }) => {
+    darkSchemeQuery.addEventListener?.("change", ({ matches }) => {
       editorView.dispatch({
         effects: themeCompartment.reconfigure(
           darkSupported && matches ? darkTheme : lightTheme,
