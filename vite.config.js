@@ -23,6 +23,9 @@ export default defineConfig({
           },
         ],
       },
+      srcDir: "src",
+      filename: "sw.js",
+      strategies: "injectManifest",
     }),
     legacy({
       targets: ["edge >= 12"],
