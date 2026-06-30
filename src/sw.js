@@ -5,8 +5,12 @@ precacheAndRoute(self.__WB_MANIFEST)
 
 registerRoute(
   new NavigationRoute(createHandlerBoundToURL("classic/index.html"), {
-    allowlist: [/^\/kg-mann-calculator\/classic/],
+    allowlist: [/^\/kg-mann-calculator\/classic\//],
   }),
 )
 
-registerRoute(new NavigationRoute(createHandlerBoundToURL("index.html")))
+registerRoute(
+  new NavigationRoute(createHandlerBoundToURL("index.html"), {
+    denylist: [/^\/kg-mann-calculator\/classic$/],
+  }),
+)
